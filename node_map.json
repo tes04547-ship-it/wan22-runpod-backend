@@ -1,0 +1,9 @@
+{
+  "load_image": null,
+  "positive_prompt": null,
+  "negative_prompt": null,
+  "latent": null,
+  "lora_high": [],
+  "lora_low": [],
+  "audio_prompt": null
+}

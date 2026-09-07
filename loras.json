@@ -1,0 +1,82 @@
+{
+  "high_low": [
+    {
+      "name": "SVI_v2_PRO",
+      "high_file": "SVI_v2_PRO_Wan2.2-I2V-A14B_HIGH_lora_rank_128_fp16.safetensors",
+      "low_file": "SVI_v2_PRO_Wan2.2-I2V-A14B_LOW_lora_rank_128_fp16.safetensors",
+      "required": true,
+      "trigger": ""
+    },
+    {
+      "name": "LightX2V",
+      "high_file": "Wan2.2-Lightning_I2V-A14B-4steps-lora_HIGH_fp16.safetensors",
+      "low_file": "Wan2.2-Lightning_I2V-A14B-4steps-lora_LOW_fp16.safetensors",
+      "required": false,
+      "trigger": ""
+    }
+  ],
+  "actions": [
+    { "name": "WAN_General_NSFW",      "file": "WAN_General_NSFW_experimental.safetensors", "version_id": 2073605, "category": "base" },
+    { "name": "WAN_DR34ML4Y_AllInOne", "file": "WAN_DR34ML4Y_AllInOne_NSFW.safetensors", "version_id": 2176505, "category": "base" },
+
+    { "name": "Deepthroat_Blowjob",       "file": "Deepthroat_Blowjob_Wan2X_I2V_T2V.safetensors", "version_id": 2152516, "category": "oral" },
+    { "name": "Ultimate_DeepThroat",      "file": "Ultimate_DeepThroat_I2V_Wan22_K3NK.safetensors", "version_id": 2325788, "category": "oral" },
+    { "name": "Combo_Handjob_Blowjob",    "file": "Combo_Handjob_Blowjob_Wan22_I2V.safetensors", "version_id": 2149593, "category": "oral" },
+    { "name": "POV_Double_Blowjob",       "file": "POV_Double_Blowjob_Wan22_I2V.safetensors", "version_id": 2164213, "category": "oral" },
+    { "name": "Teasing_Sensual_Blowjob",  "file": "Teasing_Sensual_Blowjob_Wan22_I2V.safetensors", "version_id": 2511581, "category": "oral" },
+    { "name": "Deepthroat_FaceFuck",      "file": "Deepthroat_FaceFuck_Wan22_I2V.safetensors", "version_id": 2517513, "category": "oral" },
+    { "name": "Oral_Insertion",           "file": "Oral_Insertion_Wan22.safetensors", "version_id": 2121297, "category": "oral" },
+
+    { "name": "Cunnilingus_K3NK",         "file": "Cunnilingus_K3NK_Wan22.safetensors", "version_id": 2145089, "category": "cunnilingus" },
+    { "name": "Perfect_Fingering",        "file": "Perfect_Fingering_Wan22_I2V.safetensors", "version_id": 2209481, "category": "cunnilingus" },
+    { "name": "Wan_Fingering_Pussy",      "file": "Wan_Fingering_Pussy.safetensors", "version_id": 2272024, "category": "cunnilingus" },
+    { "name": "Finger_Slap_Spread_Pussy", "file": "Finger_Slap_Spread_Pussy.safetensors", "version_id": 2565600, "category": "cunnilingus" },
+
+    { "name": "Handjob_One_Two_Handed",   "file": "Handjob_One_Two_Handed_Wan22.safetensors", "version_id": 2352366, "category": "handjob" },
+
+    { "name": "POV_Paizuri_Titfuck",      "file": "POV_Paizuri_Titfuck_Wan22.safetensors", "version_id": 2342652, "category": "paizuri" },
+    { "name": "Groping_Massage_Breast",   "file": "Groping_Massage_Breast_Wan.safetensors", "version_id": 2605575, "category": "paizuri" },
+    { "name": "Massage_Tits_MQLab",       "file": "Massage_Tits_Wan22_MQLab.safetensors", "version_id": 2210306, "category": "paizuri" },
+
+    { "name": "Assertive_Cowgirl",        "file": "Assertive_Cowgirl_Wan_I2V.safetensors", "version_id": 2129122, "category": "positions" },
+    { "name": "Cowgirl_ReverseCowgirl",   "file": "Cowgirl_ReverseCowgirl_Wan_T2V_I2V.safetensors", "version_id": 2156435, "category": "positions" },
+    { "name": "POV_Missionary",           "file": "POV_Missionary_Wan22.safetensors", "version_id": 2098405, "category": "positions" },
+    { "name": "Doggy_Slider",             "file": "Doggy_Slider_T2V_I2V_Wan22.safetensors", "version_id": 2249683, "category": "positions" },
+    { "name": "Doggy_MQLab",              "file": "Doggy_Wan22_MQLab.safetensors", "version_id": 2176892, "category": "positions" },
+    { "name": "Face_Down_Ass_Up",         "file": "Face_Down_Ass_Up_Wan22_I2V.safetensors", "version_id": 2183383, "category": "positions" },
+    { "name": "Sex_From_Behind",          "file": "Sex_From_Behind_Front_Facing_I2V.safetensors", "version_id": 2545249, "category": "positions" },
+    { "name": "Spoon_MQLab",              "file": "Spoon_Wan22_MQLab.safetensors", "version_id": 2169632, "category": "positions" },
+    { "name": "Mating_Press",             "file": "Mating_Press_Wan22_I2V.safetensors", "version_id": 2663475, "category": "positions" },
+    { "name": "Pegging",                  "file": "Pegging_Wan22_I2V.safetensors", "version_id": 2710056, "category": "positions" },
+
+    { "name": "Cum_Facial",               "file": "Cum_Facial_Wan22.safetensors", "version_id": 2460386, "category": "cumshot" },
+    { "name": "Anime_Cumshot",            "file": "Anime_Cumshot_Aesthetics_Wan22_I2V.safetensors", "version_id": 2116008, "category": "cumshot" },
+    { "name": "POV_Body_Cumshot_Pullout", "file": "POV_Body_Cumshot_Pullout_Wan22_I2V.safetensors", "version_id": 2298673, "category": "cumshot" },
+    { "name": "Male_Finishing_Anime",     "file": "Male_Finishing_Anime_Wan22.safetensors", "version_id": 2579567, "category": "cumshot" },
+
+    { "name": "Anal_Insertion",           "file": "Anal_Insertion_I2V.safetensors", "version_id": 2266652, "category": "anal" },
+    { "name": "Fisting_Vagina_Anus",      "file": "Fisting_Vagina_Anus_Wan22.safetensors", "version_id": 2411126, "category": "anal" },
+
+    { "name": "Footjob_Wan22",            "file": "Footjob_Wan22_I2V.safetensors", "version_id": 2107285, "category": "foot" },
+    { "name": "Foot_Worship_Toe_Sucking", "file": "Foot_Worship_Toe_Sucking_Wan22_I2V.safetensors", "version_id": 2267620, "category": "foot" },
+    { "name": "Footjob_I2V",              "file": "Footjob_I2V_Wan22.safetensors", "version_id": 2382169, "category": "foot" },
+
+    { "name": "Thigh_Sex",                "file": "Thigh_Sex_Wan22_T2V.safetensors", "version_id": 2286441, "category": "special" },
+    { "name": "Fucking_Machine",          "file": "Fucking_Machine_Wan22_I2V.safetensors", "version_id": 2752896, "category": "special" },
+    { "name": "Penis_Blowjob_Cumshot",    "file": "Penis_Blowjob_Cumshot_Wan22_Taz.safetensors", "version_id": 2267675, "category": "special" },
+
+    { "name": "Tentacled_Wan22",          "file": "Tentacled_Wan22_14B.safetensors", "version_id": 2543800, "category": "tentacles" },
+    { "name": "Wriggling_Motion_Tentacles","file": "Wriggling_Motion_Tentacles_Wan22.safetensors", "version_id": 2161335, "category": "tentacles" },
+
+    { "name": "Hip_Sway_Ass_Shaking",     "file": "Hip_Sway_Ass_Shaking_Dance_Wan22_I2V.safetensors", "version_id": 2347127, "category": "motion" },
+    { "name": "Licking_Lips",             "file": "Licking_Lips_I2V_Wan22.safetensors", "version_id": 2239947, "category": "motion" },
+    { "name": "French_Kiss",              "file": "French_Kiss_Wan22_I2V_T2V.safetensors", "version_id": 2445168, "category": "motion" },
+    { "name": "Squatting_Froggy",         "file": "Squatting_Froggy_I2V_Wan22.safetensors", "version_id": 2623479, "category": "motion" },
+    { "name": "Wan_Dildo_Classic",        "file": "Wan_Dildo_Classic.safetensors", "version_id": 2405949, "category": "motion" },
+    { "name": "The_Walk",                 "file": "The_Walk_Wan22_I2V_T2V.safetensors", "version_id": 2254373, "category": "motion" },
+    { "name": "Slap_SelfSlap",            "file": "Slap_SelfSlap_Wan22_I2V_T2V.safetensors", "version_id": 2509620, "category": "motion" },
+    { "name": "Jerking_Off",              "file": "Jerking_Off_Wan.safetensors", "version_id": 2603468, "category": "motion" },
+    { "name": "Multiscene_Photoshoot",    "file": "Wan_Multiscene_Photoshoot_Softcore.safetensors", "version_id": 2606755, "category": "motion" },
+    { "name": "Xray_NSFW_Anime",          "file": "Wan22_Xray_NSFW_Anime_I2V_T2V.safetensors", "version_id": 2631919, "category": "motion" }
+  ]
+}
