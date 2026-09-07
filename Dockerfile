@@ -18,9 +18,17 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # ============ COMFYUI ============
+# ComfyUI
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
     cd ${COMFYUI_DIR} && \
-    python3 -m pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
+
+# ============ FIX: Pin PyTorch ke CUDA 12.1 ============
+RUN pip install --no-cache-dir --force-reinstall \
+    torch==2.4.1 \
+    torchvision==0.19.1 \
+    torchaudio==2.4.1 \
+    --index-url https://download.pytorch.org/whl/cu121
 
 # ============ CUSTOM NODES WAJIB (sesuai notebook Cell 3) ============
 RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
