@@ -24,6 +24,4 @@ jobs:
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/wan22-backend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/wan22-backend:v2
-            ${{ secrets.DOCKERHUB_USERNAME }}/wan22-backend:v3
-
+            ${{ secrets.DOCKERHUB_USERNAME }}/wan22-backend:${{ github.sha }}
