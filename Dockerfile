@@ -47,9 +47,9 @@ RUN cd ${COMFYUI_DIR}/custom_nodes && \
     done
 
 # ============ MODEL PATH → NETWORK VOLUME ============
-RUN mkdir -p /workspace/ComfyUI/models && \
+RUN mkdir -p /runpod-volume/ComfyUI/models && \
     rm -rf ${COMFYUI_DIR}/models && \
-    ln -s /workspace/ComfyUI/models ${COMFYUI_DIR}/models
+    ln -s /runpod-volume/ComfyUI/models ${COMFYUI_DIR}/models
 
 # ============ BACKEND APP ============
 COPY requirements.txt /app/requirements.txt
