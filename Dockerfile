@@ -23,6 +23,10 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
     cd ${COMFYUI_DIR} && \
     pip install --no-cache-dir -r requirements.txt
 
+# ============ FIX: Install missing dependencies ============
+RUN pip install --no-cache-dir sqlalchemy aiosqlite aiohttp
+
+
 # ============ FIX: Pin PyTorch ke CUDA 12.1 ============
 RUN pip install --no-cache-dir --force-reinstall \
     torch==2.4.1 \
