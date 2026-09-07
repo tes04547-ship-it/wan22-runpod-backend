@@ -20,7 +20,7 @@ RUN apt-get update && \
 # ============ COMFYUI ============
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
     cd ${COMFYUI_DIR} && \
-    pip install --no-cache-dir -r requirements.txt
+    python3 -m pip install --no-cache-dir -r requirements.txt
 
 # ============ CUSTOM NODES WAJIB (sesuai notebook Cell 3) ============
 RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
@@ -42,7 +42,7 @@ RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
 RUN cd ${COMFYUI_DIR}/custom_nodes && \
     for d in */; do \
       if [ -f "$d/requirements.txt" ]; then \
-        pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d requirements"; \
+        python3 -m pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d requirements"; \
       fi; \
     done
 
@@ -53,7 +53,7 @@ RUN mkdir -p /runpod-volume/ComfyUI/models && \
 
 # ============ BACKEND APP ============
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt
 
 COPY handler.py /app/handler.py
 COPY workflow_downloader.py /app/workflow_downloader.py
@@ -64,4 +64,4 @@ COPY node_map.json /app/node_map.json
 COPY inspect_workflow.py /app/inspect_workflow.py
 
 WORKDIR /app
-CMD ["python", "-u", "handler.py"]
+CMD ["python3", "-u", "handler.py"]
