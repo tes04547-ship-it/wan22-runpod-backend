@@ -1,6 +1,6 @@
 FROM runpod/worker-comfyui:main-base
 
-ENV COMFYUI_DIR=/app/ComfyUI \
+ENV COMFYUI_DIR=/comfyui \
     COMFYUI_PORT=8188 \
     MODELS_DIR=/runpod-volume/ComfyUI/models
 
@@ -23,11 +23,11 @@ RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
     git clone https://github.com/crystian/ComfyUI-Crystools.git && \
     git clone https://github.com/Jordach/comfy-plasma.git
 
-# Install requirements tiap custom node (lanjut walau ada yang skip)
+# Install requirements tiap custom node
 RUN cd ${COMFYUI_DIR}/custom_nodes && \
     for d in */; do \
       if [ -f "$d/requirements.txt" ]; then \
-        pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d requirements"; \
+        python3 -m pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d requirements"; \
       fi; \
     done
 
@@ -37,7 +37,7 @@ RUN rm -rf ${COMFYUI_DIR}/models && \
 
 # ============ BACKEND APP ============
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt || true
+RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt || true
 
 COPY handler.py /app/handler.py
 COPY workflow_downloader.py /app/workflow_downloader.py
@@ -46,6 +46,9 @@ COPY download_models.py /app/download_models.py
 COPY loras.json /app/loras.json
 COPY node_map.json /app/node_map.json
 COPY inspect_workflow.py /app/inspect_workflow.py
+
+# ============ PENTING: Nonaktifkan entrypoint bawaan ============
+ENTRYPOINT []
 
 WORKDIR /app
 CMD ["python3", "-u", "handler.py"]
