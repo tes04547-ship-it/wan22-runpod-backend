@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && \
 RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
     (git clone --depth=1 https://github.com/kijai/ComfyUI-WanVideoWrapper.git || echo "FAILED: WanVideoWrapper") && \
     (git clone --depth=1 https://github.com/city96/ComfyUI-GGUF.git || echo "FAILED: ComfyUI-GGUF") && \
+     git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
     (git clone --depth=1 https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git || echo "FAILED: VideoHelperSuite") && \
     (git clone --depth=1 https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git || echo "FAILED: Frame-Interpolation") && \
     (git clone --depth=1 https://github.com/kijai/ComfyUI-MMAudio.git || echo "FAILED: MMaAudio") && \
