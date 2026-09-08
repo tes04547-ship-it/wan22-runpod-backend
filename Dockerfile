@@ -1,12 +1,10 @@
-FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
+FROM runpod/base:0.4.0-cuda12.1.0
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
-    HF_HOME=/workspace/hf_cache \
-    HF_HUB_ENABLE_HF_TRANSFER=1 \
-    COMFYUI_DIR=/app/ComfyUI \
+    COMFYUI_DIR=/comfyui \
     COMFYUI_PORT=8188 \
-    MODELS_DIR=/workspace/ComfyUI/models
+    MODELS_DIR=/runpod-volume/ComfyUI/models
 
 WORKDIR /app
 
@@ -14,51 +12,52 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git git-lfs aria2 wget curl ca-certificates unzip \
         ffmpeg libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 \
-        build-essential \
-        python3 python3-pip python3-dev && \
+        python3 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install --upgrade pip
+# ============ PIN TORCH KE CUDA 12.1 (PYTORCH 2.5.1) ============
+RUN pip install --no-cache-dir --force-reinstall \
+    torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
+    --index-url https://download.pytorch.org/whl/cu121
 
 # ============ COMFYUI ============
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
+RUN git clone --depth=1 https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
     cd ${COMFYUI_DIR} && \
     pip install --no-cache-dir -r requirements.txt
 
-# ============ FIX: Install missing dependencies ============
-RUN pip install --no-cache-dir sqlalchemy aiosqlite aiohttp
+# ============ DEPENDENSI TAMBAHAN (TERMASUK comfy_kitchen & nvidia-ml-py) ============
+RUN pip install --no-cache-dir comfy_kitchen nvidia-ml-py \
+    sqlalchemy aiosqlite aiohttp alembic blake3 xformers \
+    einops einops-exts ftfy regex safetensors sentencepiece protobuf \
+    accelerate transformers diffusers av opencv-python-headless \
+    librosa soundfile psutil omegaconf timm pydantic python-dotenv \
+    || true
 
-# ============ CUSTOM NODES WAJIB (sesuai notebook Cell 3) ============
+# ============ CUSTOM NODES (tahan gagal) ============
 RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
-    git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git && \
-    git clone https://github.com/city96/ComfyUI-GGUF.git && \
-    git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git && \
-    git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && \
-    git clone https://github.com/kijai/ComfyUI-MMAudio.git && \
-    git clone https://github.com/sipherxyz/comfyui-art-venture.git && \
-    git clone https://github.com/cubiq/ComfyUI_essentials.git && \
-    git clone https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git && \
-    git clone https://github.com/ltdrdata/ComfyUI-Impact-Pack.git && \
-    git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
-    git clone https://github.com/jags111/efficiency-nodes-comfyui.git && \
-    git clone https://github.com/rgthree/rgthree-comfy.git && \
-    git clone https://github.com/crystian/ComfyUI-Crystools.git && \
-    git clone https://github.com/Jordach/comfy-plasma.git
+    (git clone --depth=1 https://github.com/kijai/ComfyUI-WanVideoWrapper.git || echo "FAILED: WanVideoWrapper") && \
+    (git clone --depth=1 https://github.com/city96/ComfyUI-GGUF.git || echo "FAILED: GGUF") && \
+    (git clone --depth=1 https://github.com/kijai/ComfyUI-KJNodes.git || echo "FAILED: KJNodes") && \
+    (git clone --depth=1 https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git || echo "FAILED: VideoHelperSuite") && \
+    (git clone --depth=1 https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git || echo "FAILED: Frame-Interpolation") && \
+    (git clone --depth=1 https://github.com/kijai/ComfyUI-MMAudio.git || echo "FAILED: MMaAudio") && \
+    (git clone --depth=1 https://github.com/sipherxyz/comfyui-art-venture.git || echo "FAILED: art-venture") && \
+    (git clone --depth=1 https://github.com/cubiq/ComfyUI_essentials.git || echo "FAILED: essentials") && \
+    (git clone --depth=1 https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet.git || echo "FAILED: Advanced-ControlNet") && \
+    (git clone --depth=1 https://github.com/ltdrdata/ComfyUI-Impact-Pack.git || echo "FAILED: Impact-Pack") && \
+    (git clone --depth=1 https://github.com/ltdrdata/ComfyUI-Manager.git || echo "FAILED: Manager") && \
+    (git clone --depth=1 https://github.com/jags111/efficiency-nodes-comfyui.git || echo "FAILED: efficiency") && \
+    (git clone --depth=1 https://github.com/rgthree/rgthree-comfy.git || echo "FAILED: rgthree") && \
+    (git clone --depth=1 https://github.com/crystian/ComfyUI-Crystools.git || echo "FAILED: Crystools") && \
+    (git clone --depth=1 https://github.com/Jordach/comfy-plasma.git || echo "FAILED: comfy-plasma")
 
+# Install requirements custom nodes
 RUN cd ${COMFYUI_DIR}/custom_nodes && \
     for d in */; do \
       if [ -f "$d/requirements.txt" ]; then \
-        python3 -m pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d requirements"; \
+        pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d"; \
       fi; \
     done
-
-# ============ FIX: Pin PyTorch + NCCL ke CUDA 12.1 (paling akhir, override apapun yang diubah custom nodes) ============
-RUN pip install --no-cache-dir --force-reinstall \
-    torch==2.4.1 \
-    torchvision==0.19.1 \
-    torchaudio==2.4.1 \
-    --index-url https://download.pytorch.org/whl/cu121 && \
-    pip install --no-cache-dir --force-reinstall nvidia-nccl-cu12==2.20.5
 
 # ============ MODEL PATH → NETWORK VOLUME ============
 RUN mkdir -p /runpod-volume/ComfyUI/models && \
@@ -67,7 +66,7 @@ RUN mkdir -p /runpod-volume/ComfyUI/models && \
 
 # ============ BACKEND APP ============
 COPY requirements.txt /app/requirements.txt
-RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt || true
 
 COPY handler.py /app/handler.py
 COPY workflow_downloader.py /app/workflow_downloader.py
@@ -76,6 +75,9 @@ COPY download_models.py /app/download_models.py
 COPY loras.json /app/loras.json
 COPY node_map.json /app/node_map.json
 COPY inspect_workflow.py /app/inspect_workflow.py
+
+# ============ NONAKTIFKAN ENTRYPOINT BAWAAN ============
+ENTRYPOINT []
 
 WORKDIR /app
 CMD ["python3", "-u", "handler.py"]
