@@ -1,41 +1,10 @@
-FROM runpod/base:0.4.0-cuda12.1.0
+FROM runpod/worker-comfyui:main-base
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    PYTHONUNBUFFERED=1 \
-    HF_HOME=/workspace/hf_cache \
-    HF_HUB_ENABLE_HF_TRANSFER=1 \
-    COMFYUI_DIR=/app/ComfyUI \
+ENV COMFYUI_DIR=/app/ComfyUI \
     COMFYUI_PORT=8188 \
     MODELS_DIR=/runpod-volume/ComfyUI/models
 
 WORKDIR /app
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        git git-lfs aria2 wget curl ca-certificates unzip \
-        ffmpeg libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 \
-        python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
-# ============ PIN TORCH KE CUDA 12.1 ============
-RUN pip install --no-cache-dir --force-reinstall \
-    torch==2.4.1 \
-    torchvision==0.19.1 \
-    torchaudio==2.4.1 \
-    --index-url https://download.pytorch.org/whl/cu121
-
-# ============ COMFYUI ============
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
-    cd ${COMFYUI_DIR} && \
-    pip install --no-cache-dir -r requirements.txt
-
-# ============ DEPENDENSI TAMBAHAN (dari requirements.txt) ============
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
-
-# ============ OPSIONAL (package yang mungkin tidak ada) ============
-COPY requirements-optional.txt /app/requirements-optional.txt
-RUN pip install --no-cache-dir -r /app/requirements-optional.txt || echo "optional skipped"
 
 # ============ CUSTOM NODES WAJIB ============
 RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
@@ -54,6 +23,7 @@ RUN mkdir -p ${COMFYUI_DIR}/custom_nodes && cd ${COMFYUI_DIR}/custom_nodes && \
     git clone https://github.com/crystian/ComfyUI-Crystools.git && \
     git clone https://github.com/Jordach/comfy-plasma.git
 
+# Install requirements tiap custom node (lanjut walau ada yang skip)
 RUN cd ${COMFYUI_DIR}/custom_nodes && \
     for d in */; do \
       if [ -f "$d/requirements.txt" ]; then \
@@ -62,11 +32,13 @@ RUN cd ${COMFYUI_DIR}/custom_nodes && \
     done
 
 # ============ MODEL PATH → NETWORK VOLUME ============
-RUN mkdir -p /runpod-volume/ComfyUI/models && \
-    rm -rf ${COMFYUI_DIR}/models && \
+RUN rm -rf ${COMFYUI_DIR}/models && \
     ln -s /runpod-volume/ComfyUI/models ${COMFYUI_DIR}/models
 
-# ============ FILE BACKEND LAINNYA ============
+# ============ BACKEND APP ============
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt || true
+
 COPY handler.py /app/handler.py
 COPY workflow_downloader.py /app/workflow_downloader.py
 COPY workflow_converter.py /app/workflow_converter.py
