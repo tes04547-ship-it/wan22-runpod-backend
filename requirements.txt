@@ -1,3 +1,4 @@
+# Base project
 runpod==1.7.7
 numpy
 Pillow>=10.0.0
@@ -7,4 +8,30 @@ hf_transfer
 imageio
 imageio-ffmpeg
 tqdm
+
+# ComfyUI tambahan
 sqlalchemy
+aiosqlite
+aiohttp
+alembic
+blake3
+xformers
+einops
+einops-exts
+ftfy
+regex
+safetensors
+sentencepiece
+protobuf
+accelerate
+transformers
+diffusers
+av
+opencv-python-headless
+librosa
+soundfile
+psutil
+omegaconf
+timm
+pydantic
+python-dotenv
