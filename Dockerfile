@@ -2,7 +2,9 @@ FROM runpod/base:0.4.0-cuda12.1.0
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
-    COMFYUI_DIR=/comfyui \
+    HF_HOME=/runpod-volume/hf_cache \
+    HF_HUB_ENABLE_HF_TRANSFER=1 \
+    COMFYUI_DIR=/app/ComfyUI \
     COMFYUI_PORT=8188 \
     MODELS_DIR=/runpod-volume/ComfyUI/models
 
@@ -12,22 +14,19 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git git-lfs aria2 wget curl ca-certificates unzip \
         ffmpeg libgl1 libglib2.0-0 libsm6 libxrender1 libxext6 \
-        python3 python3-pip && \
+        build-essential python3 python3-pip python3-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# ============ PIN TORCH KE CUDA 12.1 (PYTORCH 2.5.1) ============
-RUN pip install --no-cache-dir --force-reinstall \
-    torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
-    --index-url https://download.pytorch.org/whl/cu121
+RUN python3 -m pip install --upgrade pip
 
-# ============ COMFYUI ============
-RUN git clone --depth=1 https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
+# ============ COMFYUI (clone dulu, lalu install req) ============
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git ${COMFYUI_DIR} && \
     cd ${COMFYUI_DIR} && \
     pip install --no-cache-dir -r requirements.txt
 
-# ============ DEPENDENSI TAMBAHAN (TERMASUK comfy_kitchen & nvidia-ml-py) ============
-RUN pip install --no-cache-dir comfy_kitchen nvidia-ml-py \
-    sqlalchemy aiosqlite aiohttp alembic blake3 xformers \
+# ============ FIX: Install missing deps ============
+RUN pip install --no-cache-dir \
+    sqlalchemy aiosqlite aiohttp alembic blake3 comfy_kitchen nvidia-ml-py \
     einops einops-exts ftfy regex safetensors sentencepiece protobuf \
     accelerate transformers diffusers av opencv-python-headless \
     librosa soundfile psutil omegaconf timm pydantic python-dotenv \
@@ -58,6 +57,11 @@ RUN cd ${COMFYUI_DIR}/custom_nodes && \
         pip install --no-cache-dir -r "$d/requirements.txt" || echo "skip $d"; \
       fi; \
     done
+
+# ============ PIN TORCH 2.7.1 + CU118 (solusi utama) ============
+RUN pip install --no-cache-dir --force-reinstall \
+    torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 \
+    --index-url https://download.pytorch.org/whl/cu118
 
 # ============ MODEL PATH → NETWORK VOLUME ============
 RUN mkdir -p /runpod-volume/ComfyUI/models && \
