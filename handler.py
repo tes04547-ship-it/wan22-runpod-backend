@@ -8,40 +8,8 @@ import subprocess
 import requests
 import runpod
 
-def find_comfyui_dir():
-    """Cari lokasi ComfyUI yang benar di dalam container."""
-    candidates = [
-        os.getenv("COMFYUI_DIR", ""),
-        "/app/ComfyUI",
-        "/comfyui",
-        "/workspace/ComfyUI",
-        "/ComfyUI",
-        "/opt/ComfyUI",
-        "/home/user/ComfyUI",
-    ]
-
-    for path in candidates:
-        if not path:
-            continue
-        if os.path.exists(os.path.join(path, "main.py")):
-            print(f"comfyui dir found: {path}")
-            return path
-
-    # Fallback: cari dari filesystem (agak lambat tapi pasti)
-    print("Searching for main.py in filesystem...")
-    for root, dirs, files in os.walk("/"):
-        if "main.py" in files and root.endswith("ComfyUI"):
-            print(f"comfyui dir found: {root}")
-            return root
-        # Jangan terlalu dalam
-        if root.count("/") > 5:
-            continue
-
-    return "/app/ComfyUI"  # fallback default
-
-
-COMFYUI_DIR = find_comfyui_dir()
-
+# ============ KONFIGURASI ============
+COMFYUI_DIR = os.getenv("COMFYUI_DIR", "/comfyui")
 COMFYUI_PORT = int(os.getenv("COMFYUI_PORT", "8188"))
 COMFYUI_URL = f"http://127.0.0.1:{COMFYUI_PORT}"
 WORKFLOW_PATH = os.getenv("WORKFLOW_PATH", "/app/workflow_api.json")
@@ -66,7 +34,8 @@ def ensure_comfyui():
 
     comfyui_process = subprocess.Popen(
         [
-            sys.executable, "main.py",
+            sys.executable,
+            os.path.join(COMFYUI_DIR, "main.py"),
             "--listen", "127.0.0.1",
             "--port", str(COMFYUI_PORT),
             "--preview-method", "none",
@@ -375,9 +344,16 @@ def handler(job):
 
     inp = job.get("input", {})
     image_b64 = inp.get("image_b64") or inp.get("image")
+    image_url = inp.get("image_url")
+
+    if image_url and not image_b64:
+        print(f"Downloading image from URL: {image_url[:80]}")
+        r_img = requests.get(image_url, timeout=30)
+        r_img.raise_for_status()
+        image_b64 = base64.b64encode(r_img.content).decode()
 
     if not image_b64:
-        return {"status": "error", "error": "image_b64 wajib diisi"}
+        return {"status": "error", "error": "image_b64 atau image_url wajib diisi"}
 
     uploaded_name = upload_image(image_b64)
 
